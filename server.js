@@ -23,7 +23,7 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { use
 
 // API routes
 
-app.get("/api/workouts"), (req, res) => {
+app.get("/api/workouts", (req, res) => {
   console.log("/api/workouts")
   Workout.find()
   .then(dbWorkout => {
@@ -32,9 +32,9 @@ app.get("/api/workouts"), (req, res) => {
   .catch(err => {
     res.json(err);
   });
-}
+});
 
-app.get("/api/workouts/range"), (req, res) => {
+app.get("/api/workouts/range", (req, res) => {
   console.log("/api/workouts/range")
   Workout.find({}).limit(7)
   .then(dbWorkout => {
@@ -43,7 +43,7 @@ app.get("/api/workouts/range"), (req, res) => {
   .catch(err => {
     res.json(err);
   });
-}
+});
 
 app.post("/api/workouts", (req, res) => {
   console.log("/api/workouts")
@@ -74,6 +74,10 @@ app.put("/api/workouts/:id", (req, res) => {
 });
 
 // html routes
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/index.html"));
+});
+
 app.get("/exercise", (req, res) => {
    res.sendFile(path.join(__dirname, "./public/exercise.html"));
 });
@@ -81,6 +85,7 @@ app.get("/exercise", (req, res) => {
 app.get("/stats", (req, res) => {
   res.sendFile(path.join(__dirname, "./public/stats.html"));
 });
+
 
 // Start the server
 app.listen(PORT, () => {
