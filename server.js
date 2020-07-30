@@ -5,7 +5,7 @@ const path = require("path")
 
 const PORT = process.env.PORT || 3000;
 
-const db = require("./models");
+const Workout = require("./models/workout.js");
 
 const app = express();
 
@@ -16,24 +16,16 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/populatedb", { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true });
 
 // Routes
 
 
-// html routes
-app.get("/exercise", (req, res) => {
-   res.sendFile(path.join(__dirname, "./public/exercise.html"));
-});
-
-app.get("/stats", (req, res) => {
-  res.sendFile(path.join(__dirname, "./public/stats.html"));
-});
-
 // API routes
 
 app.get("/api/workouts"), (req, res) => {
-  db.Workout.find()
+  console.log("/api/workouts")
+  Workout.find()
   .then(dbWorkout => {
     res.json(dbWorkout);
   })
@@ -43,7 +35,8 @@ app.get("/api/workouts"), (req, res) => {
 }
 
 app.get("/api/workouts/range"), (req, res) => {
-  db.Workout.find({}).limit(7)
+  console.log("/api/workouts/range")
+  Workout.find({}).limit(7)
   .then(dbWorkout => {
     res.json(dbWorkout);
   })
@@ -53,7 +46,8 @@ app.get("/api/workouts/range"), (req, res) => {
 }
 
 app.post("/api/workouts", (req, res) => {
-    db.Workout.create({})
+  console.log("/api/workouts")
+    Workout.create({})
       .then(dbWorkout => {
         res.json(dbWorkout);
       })
@@ -63,7 +57,7 @@ app.post("/api/workouts", (req, res) => {
 });
 
 app.put("/api/workouts/:id", (req, res) => {
-  db.Workout.findByIdAndUpdate(req.params.id, {$push: {
+  Workout.findByIdAndUpdate(req.params.id, {$push: {
     exercises: req.body
   }},
   {
@@ -77,6 +71,15 @@ app.put("/api/workouts/:id", (req, res) => {
     .catch(err => {
       res.json(err);
     });
+});
+
+// html routes
+app.get("/exercise", (req, res) => {
+   res.sendFile(path.join(__dirname, "./public/exercise.html"));
+});
+
+app.get("/stats", (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/stats.html"));
 });
 
 // Start the server
